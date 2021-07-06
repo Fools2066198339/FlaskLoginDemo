@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <head>
+        <meta charset="utf-8">
+        <title>
+            后台管理系统
+        </title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="./css/xadmin.css" media="all">
+		<script type="text/javascript" src="./js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/xadmin.js" charset="utf-8"></script>
+    </head>
+    
+    <body>
+        <div class="x-body">
+            <form class="layui-form">
+                <div class="layui-form-item">
+                    <label for="username" class="layui-form-label">
+                        <span class="x-red">*</span>登录名
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="username" name="username" required="" lay-verify="required" value="jieke"
+                        autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <!--<div class="layui-form-item">
+                    <label for="role" class="layui-form-label">
+                        <span class="x-red">*</span>角色
+                    </label>
+                    <div class="layui-input-inline">
+                      <select name="role">
+                        <option value="">请选择角色</option>
+                        <option value="超级管理员" selected="">超级管理员</option>
+                        <option value="编辑人员">编辑人员</option>
+                        <option value="问题维护">问题维护</option>
+                      </select>
+                    </div>
+                </div>-->
+
+                <div class="layui-form-item">
+                    <label for="L_pass" class="layui-form-label">
+                        <span class="x-red">*</span>密码
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="L_pass" name="pass" required="" lay-verify="pass"
+                        autocomplete="off" class="layui-input" value="">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">
+                        6到16个字符
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="L_repass" class="layui-form-label">
+                        <span class="x-red">*</span>确认密码
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="L_repass" name="repass" required="" lay-verify="repass" value=""
+                        autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="L_repass" class="layui-form-label">
+                    </label>
+                    <button  class="layui-btn" lay-filter="save" lay-submit="" >
+                        保存
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <script>
+            layui.use(['form','layer'], function(){
+                $ = layui.jquery;
+                const form = layui.form()
+                    , layer = layui.layer;
+
+                //自定义验证规则
+              form.verify({
+                nikename: function(value){
+                  if(value.length < 5){
+                    return '昵称至少得5个字符啊';
+                  }
+                }
+                ,pass: [/(.+){6,12}$/, '密码必须6到12位']
+                ,repass: function(value){
+                    if($('#L_pass').val()!=$('#L_repass').val()){
+                        return '两次密码不一致';
+                    }
+                }
+              });
+
+              //监听提交
+              form.on('submit(save)', function(data){
+                console.log(data);
+                //发异步，把数据提交给flask
+                $.ajax({
+                    url: "/userSet",
+                    method: 'POST',
+                    data:data,
+                    success:function (data) {
+                    console.log(data);
+
+
+                    },  error:function(e) {
+                console.log(e)            }
+
+                })
+
+
+
+                return false;
+              });
+
+
+            });
+
+
+
+  $(document).ready(function () {
+                var data={
+                usr: $("#username").val()//获取文本框中用户输入的的值
+                }
+                console.log(data);
+                $.ajax({
+                    url: "/userEdit",
+                    data:data, datatype:'json',
+                    method: "GET",
+                    success:function (result) {
+                        console.log(result[1]);
+
+                        document.getElementById('username').innerText=result[2];
+                        document.getElementById('password').innerText=result[1];
+                    },
+                    error:function (e) {
+                console.log(e)
+            }
+                });
+
+
+ })
+
+
+        </script>
+        
+    </body>
+
+</html>

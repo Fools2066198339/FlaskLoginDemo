@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/index.js"></script>
+
+</head>
+<body>
+欢迎您登录系统！！！！
+
+<table id="table" class="">
+    <tbody id="tbody">
+    <tr>
+        <th>id</th>
+        <th>用户名</th>
+        <th>操作</th>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url:"/requestUser",
+            method:"GET",
+            success:function (data) {
+                const tbody = document.getElementById("tbody");
+                let innerHTML = tbody.innerHTML;
+                let html;
+                for (var i = 0; i < data.length; i++) {
+                    var for_data = data[i];
+                    console.log(for_data);
+                    html =
+                        "<tr>" +
+                        "<th>" + for_data[0] + "</th>" +
+                        "<th>" + for_data[1] + "</th>" +
+                        "<th><a href='/deleteUser?id=" + data[i][0] + "'>删除用户</a>" +
+                        "</tr>";
+                    innerHTML = innerHTML + html;
+                    tbody.innerHTML = innerHTML;
+                }
+            },
+            error:function (e) {
+                console.log(e)
+            }
+        });
+    })
+</script>
